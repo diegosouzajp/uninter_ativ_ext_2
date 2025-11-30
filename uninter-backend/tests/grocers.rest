@@ -1,0 +1,45 @@
+@baseUrl = http://localhost:3001/api
+@adminUsername = diego
+@adminPassword = salainen
+@grocerId = 6929fc3800f40ed1b2fd0bcd
+
+# @name login
+POST {{baseUrl}}/login
+Content-Type: application/json
+
+{
+    "username": "{{adminUsername}}",
+    "password": "{{adminPassword}}"
+}
+
+###
+GET {{baseUrl}}/grocers/
+
+###
+GET {{baseUrl}}/grocers/{{grocerId}}
+
+###
+PUT {{baseUrl}}/grocers/{{grocerId}}
+Content-type: application/json
+Authorization: Bearer {{login.response.body.token}}
+
+{
+    "id": "6929ff075ef420506f603269",
+    "name": "Atacadão Marfisa",
+    "location": "Geisel"
+}
+
+###
+DELETE {{baseUrl}}/grocers/{{grocerId}}
+Content-type: application/json
+Authorization: Bearer {{login.response.body.token}}
+
+###
+POST {{baseUrl}}/grocers/ HTTP/1.1
+Content-type: application/json
+Authorization: Bearer {{login.response.body.token}}
+
+{
+    "name": "Atacadão Marfisa",
+    "location": "Geisel"
+}

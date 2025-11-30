@@ -1,0 +1,35 @@
+@baseUrl = http://localhost:3001/api
+@adminUsername = diego
+@adminPassword = salainen
+@grocerId = 6929fc3800f40ed1b2fd0bcd
+
+# @name login
+POST {{baseUrl}}/login
+Content-Type: application/json
+
+{
+    "username": "{{adminUsername}}",
+    "password": "{{adminPassword}}"
+}
+
+### 
+GET {{baseUrl}}/allocations/
+Authorization: Bearer {{login.response.body.token}}
+
+### 
+PUT {{baseUrl}}/allocations/{{grocerId}}
+Authorization: Bearer {{login.response.body.token}}
+Content-Type: application/json
+
+{
+    "points": 200 
+}
+
+###
+PUT {{baseUrl}}/allocations/{{grocerId}}
+Authorization: Bearer {{login.response.body.token}}
+Content-Type: application/json
+
+{
+    "points": 20
+}
