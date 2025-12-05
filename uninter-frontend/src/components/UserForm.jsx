@@ -84,25 +84,27 @@ const UserForm = ({ user, setUser, allocatedPoints, setAllocatedPoints, grocers 
         {allocatedPoints.map((allocation) => (
           <li
             key={allocation.id}
-            className="flex flex-col sm:flex-row justify-between items-start sm:items-center p-4 bg-white border border-gray-100 rounded-lg shadow-sm space-y-2 sm:space-y-0"
+            className="flex flex-col p-4 bg-white border border-gray-100 rounded-lg shadow-sm space-y-3"
           >
-            <span className="font-medium text-gray-700 w-full sm:w-1/3">{allocation.grocerName}</span>
+            <span className="font-medium text-gray-700 break-words">{allocation.grocerName}</span>
 
-            <div className="flex items-center space-x-3 w-full sm:w-2/3 justify-end">
-              <input
-                type="number"
-                min="0"
-                max={allocation.currentPoints + pointsRemaining}
-                value={allocation.currentPoints}
-                onChange={({ target }) => handlePointChange(allocation.id, target.value)}
-                disabled={isSaving}
-                className="w-24 p-2 border border-gray-300 rounded-lg text-center focus:ring-indigo-500 focus:border-indigo-500 transition"
-              />
-              <span className="font-bold text-indigo-600 w-16 text-right">pontos</span>
+            <div className="flex flex-wrap items-center gap-2">
+              <div className="flex items-center gap-2">
+                <input
+                  type="number"
+                  min="0"
+                  max={allocation.currentPoints + pointsRemaining}
+                  value={allocation.currentPoints}
+                  onChange={({ target }) => handlePointChange(allocation.id, target.value)}
+                  disabled={isSaving}
+                  className="w-20 p-2 border border-gray-300 rounded-lg text-center focus:ring-indigo-500 focus:border-indigo-500 transition"
+                />
+                <span className="font-bold text-indigo-600">pts</span>
+              </div>
               <button
                 onClick={() => handleSaveAllocation(allocation)}
                 disabled={isSaving || allocation.initialPoints === allocation.currentPoints}
-                className="bg-indigo-500 text-white py-2 px-4 rounded-lg text-sm font-semibold hover:bg-indigo-600 transition shadow-md disabled:bg-gray-300 disabled:cursor-not-allowed"
+                className="bg-indigo-500 text-white py-2 px-3 rounded-lg text-sm font-semibold hover:bg-indigo-600 transition shadow-md disabled:bg-gray-300 disabled:cursor-not-allowed whitespace-nowrap"
               >
                 {isSaving ? 'Salvando...' : 'Salvar'}
               </button>
