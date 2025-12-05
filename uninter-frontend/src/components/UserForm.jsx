@@ -63,6 +63,8 @@ const UserForm = ({ user, setUser, allocatedPoints, setAllocatedPoints, grocers 
       {successMessage && <Notification className="success" message={successMessage} />}
 
       <h2 className="text-2xl font-semibold text-indigo-700">Olá, {user.name || user.username}!</h2>
+      <p>Parabéns pelas suas doações!</p>
+      <p>Use seus pontos para obter descontos em suas compras nos supermercados abaixo:</p>
 
       {/* Summary Card */}
       <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg shadow-inner">

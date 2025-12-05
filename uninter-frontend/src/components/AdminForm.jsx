@@ -148,42 +148,43 @@ const AdminForm = () => {
         <p className="text-gray-600 mt-2">Gerencie usuários e supermercados do programa.</p>
       </div>
 
-      <div className="p-6 bg-white border border-gray-200 rounded-lg shadow-sm">
+      <div className="p-4 sm:p-6 bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden">
         <h3 className="text-lg font-semibold text-gray-800 mb-4">Usuários cadastrados</h3>
         <ul className="space-y-3">
           {allUsers
             .filter((user) => user.role === 'user')
             .map((user) => (
-              <li
-                key={user.id}
-                className="flex flex-col sm:flex-row justify-between items-start sm:items-center p-4 bg-white border border-gray-100 rounded-lg shadow-sm space-y-2 sm:space-y-0"
-              >
-                <span className="font-medium text-gray-700 w-full sm:w-1/3">{user.name}</span>
+              <li key={user.id} className="flex flex-col p-4 bg-white border border-gray-100 rounded-lg shadow-sm space-y-3">
+                <span className="font-medium text-gray-700 break-words">{user.name}</span>
 
-                <div className="flex items-center space-x-3 w-full sm:w-2/3 justify-end">
-                  <input
-                    type="number"
-                    min="0"
-                    value={user.points}
-                    onChange={({ target }) => setAllUsers(allUsers.map((u) => (u.id === user.id ? { ...u, points: target.value } : u)))}
-                    disabled={isSaving}
-                    className="w-24 p-2 border border-gray-300 rounded-lg text-center focus:ring-indigo-500 focus:border-indigo-500 transition"
-                  />
-                  <span className="font-bold text-indigo-600 w-16 text-right">pontos</span>
-                  <button
-                    onClick={() => handlePointsChange(user.id, user.points)}
-                    disabled={isSaving}
-                    className="bg-indigo-500 text-white py-2 px-4 rounded-lg text-sm font-semibold hover:bg-indigo-600 transition shadow-md disabled:bg-gray-300 disabled:cursor-not-allowed"
-                  >
-                    {isSaving ? 'Salvando...' : 'Salvar'}
-                  </button>
-                  <button
-                    onClick={() => handleDelete(user.id)}
-                    disabled={isDeleting}
-                    className="bg-red-500 text-white py-2 px-4 rounded-lg text-sm font-semibold hover:bg-indigo-600 transition shadow-md disabled:bg-gray-300 disabled:cursor-not-allowed"
-                  >
-                    {isDeleting ? 'Deletando usuário...' : 'Deletar usuário'}
-                  </button>
+                <div className="flex flex-wrap items-center gap-2">
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="number"
+                      min="0"
+                      value={user.points}
+                      onChange={({ target }) => setAllUsers(allUsers.map((u) => (u.id === user.id ? { ...u, points: target.value } : u)))}
+                      disabled={isSaving}
+                      className="w-20 p-2 border border-gray-300 rounded-lg text-center focus:ring-indigo-500 focus:border-indigo-500 transition"
+                    />
+                    <span className="font-bold text-indigo-600">pontos</span>
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    <button
+                      onClick={() => handlePointsChange(user.id, user.points)}
+                      disabled={isSaving}
+                      className="bg-indigo-500 text-white py-2 px-3 rounded-lg text-sm font-semibold hover:bg-indigo-600 transition shadow-md disabled:bg-gray-300 disabled:cursor-not-allowed whitespace-nowrap"
+                    >
+                      {isSaving ? 'Salvando...' : 'Salvar pontos'}
+                    </button>
+                    <button
+                      onClick={() => handleDelete(user.id)}
+                      disabled={isDeleting}
+                      className="bg-red-500 text-white py-2 px-3 rounded-lg text-sm font-semibold hover:bg-red-600 transition shadow-md disabled:bg-gray-300 disabled:cursor-not-allowed whitespace-nowrap"
+                    >
+                      {isDeleting ? 'Deletando...' : 'Deletar usuário'}
+                    </button>
+                  </div>
                 </div>
               </li>
             ))}
