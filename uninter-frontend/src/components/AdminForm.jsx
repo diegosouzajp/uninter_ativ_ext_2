@@ -212,7 +212,7 @@ const AdminForm = () => {
               {allUsers
                 .filter((user) => user.role === 'user')
                 .map((user) => (
-                  <li key={user.id} className="flex flex-col p-4 bg-white border border-gray-100 rounded-lg shadow-sm space-y-3">
+                  <li key={user.id} className="flex flex-wrap items-center justify-between gap-3 p-4 bg-white border border-gray-100 rounded-lg shadow-sm">
                     <span className="font-medium text-gray-700 break-words">{user.name}</span>
 
                     <div className="flex flex-wrap items-center gap-2">
