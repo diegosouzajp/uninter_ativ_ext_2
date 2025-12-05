@@ -82,10 +82,7 @@ const UserForm = ({ user, setUser, allocatedPoints, setAllocatedPoints, grocers 
       {/* Allocation List */}
       <ul className="space-y-3">
         {allocatedPoints.map((allocation) => (
-          <li
-            key={allocation.id}
-            className="flex flex-col p-4 bg-white border border-gray-100 rounded-lg shadow-sm space-y-3"
-          >
+          <li key={allocation.id} className="flex flex-col p-4 bg-white border border-gray-100 rounded-lg shadow-sm space-y-3">
             <span className="font-medium text-gray-700 break-words">{allocation.grocerName}</span>
 
             <div className="flex flex-wrap items-center gap-2">
