@@ -24,7 +24,7 @@ const userSchema = new mongoose.Schema(
       required: true,
     },
     // The total pool of points the user has earned and can distribute.
-    totalAvailablePoints: {
+    points: {
       type: Number,
       default: 0,
       min: 0,

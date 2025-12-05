@@ -1,12 +1,56 @@
-h1 {
-  color: green;
-  font-style: italic;
+/* This file acts as the entry point for your Tailwind CSS styles.
+   It injects the utility classes used in App.jsx.
+*/
+
+@import 'tailwindcss';
+
+/* Global Resets & Base Styles */
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: #f9fafb; /* Matches the 'bg-gray-50' used in App.jsx */
 }
 
-.note {
-  color: grey;
-  padding-top: 5px;
-  font-size: 15px;
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
+}
+
+/* Example of a Custom Utility Class (Optional)
+   If you ever need a specific style not covered by Tailwind, add it here.
+*/
+.spinner {
+  border: 4px solid rgba(0, 0, 0, 0.1);
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border-left-color: #4f46e5; /* Indigo-600 */
+  animation: spin 1s ease infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* h1 {
+  color: green;
+  font-style: italic;
+} */
+
+.success {
+  color: green;
+  background: lightgrey;
+  font-size: 20px;
+  border-style: solid;
+  border-radius: 5px;
+  padding: 10px;
+  margin-bottom: 10px;
 }
 
 .error {

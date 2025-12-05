@@ -1,142 +1,89 @@
 import { useState, useEffect } from 'react'
 import Footer from './components/Footer'
 import LoginForm from './components/LoginForm'
-import Notification from './components/Notification'
-import Togglable from './components/Togglable'
-import loginService from './services/login'
-import grocerService from './services/grocers'
+import AdminForm from './components/AdminForm'
+import UserForm from './components/UserForm'
 import allocationService from './services/allocations'
+import grocerService from './services/grocers'
+import userService from './services/users'
+import './index.css'
 
 const App = () => {
-  const [grocers, setGrocers] = useState([])
-  const [allocations, setAllocations] = useState([])
   const [allocatedPoints, setAllocatedPoints] = useState([])
-  const [errorMessage, setErrorMessage] = useState(null)
+  const [grocers, setGrocers] = useState([])
   const [user, setUser] = useState(null)
-  const [username, setUsername] = useState('')
-  const [password, setPassword] = useState('')
-  const [totalAvailablePoints, setTotalAvailablePoints] = useState(0)
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedUser')
     if (loggedUserJSON) {
       const user = JSON.parse(loggedUserJSON)
       setUser(user)
-      setTotalAvailablePoints(user.totalAvailablePoints)
-      grocerService.setToken(user.token)
       allocationService.setToken(user.token)
+      grocerService.setToken(user.token)
+      userService.setToken(user.token)
     }
   }, [])
 
   useEffect(() => {
     const fetchAllData = async () => {
       try {
-        const allGrocers = grocerService.getAll()
-        const allAllocations = allocationService.getAll()
-        const [resGrocers, resAllocations] = await Promise.all([allGrocers, allAllocations])
+        const [resGrocers, resAllocations] = await Promise.all([grocerService.getAll(), allocationService.getAll()])
 
         if (!resGrocers || !resAllocations) {
-          throw new Error('There was a problem with at least one of the responses')
+          throw new Error('There was a problem with at least one response')
         }
 
         setGrocers(resGrocers)
-        setAllocations(resAllocations)
 
         const allocationPoints = resGrocers.map((grocer) => {
           const currentAllocation = resAllocations.find((allocation) => allocation.grocer.id === grocer.id)
           const currentPoints = currentAllocation ? currentAllocation.points : 0
-          return { id: grocer.id, initialPoints: currentPoints, currentPoints: currentPoints }
+          return {
+            id: grocer.id,
+            initialPoints: currentPoints,
+            currentPoints: currentPoints,
+            grocerName: grocer.name,
+          }
         })
         setAllocatedPoints(allocationPoints)
       } catch (error) {
-        setErrorMessage(error.message)
+        console.error(error.message)
       }
     }
 
-    if (user) fetchAllData()
-  }, [user])
+    if (user?.id) fetchAllData()
+  }, [user?.id])
 
-  const handleLogin = async (event) => {
-    event.preventDefault()
-
-    try {
-      const user = await loginService.login({ username, password })
-
-      window.localStorage.setItem('loggedUser', JSON.stringify(user))
-      grocerService.setToken(user.token)
-      allocationService.setToken(user.token)
-      setUser(user)
-      setTotalAvailablePoints(user.totalAvailablePoints)
-      setUsername('')
-      setPassword('')
-    } catch {
-      setErrorMessage('wrong credentials')
-      setTimeout(() => {
-        setErrorMessage(null)
-      }, 5000)
-    }
-  }
-
-  const handleLogout = async (event) => {
+  const handleLogout = (event) => {
     event.preventDefault()
     window.localStorage.removeItem('loggedUser')
     setUser(null)
-  }
-
-  const loginForm = () => {
-    return (
-      <Togglable buttonLabel="Entrar">
-        <LoginForm
-          username={username}
-          password={password}
-          handleUsernameChange={({ target }) => setUsername(target.value)}
-          handlePasswordChange={({ target }) => setPassword(target.value)}
-          handleSubmit={handleLogin}
-        />
-      </Togglable>
-    )
-  }
-
-  const GrocerAllocationItem = ({ grocer, allocation }) => {
-    const handleInputChange = (event) => {
-      const pointsVariation = event.target.value - allocation.currentPoints
-      if (pointsVariation === 1 && totalAvailablePoints === 0) return
-      allocation.currentPoints = allocation.currentPoints + pointsVariation
-      const updatedAllocations = allocatedPoints.map((alloc) => {
-        if (alloc.id === allocation.id) return allocation
-        else return alloc
-      })
-      setAllocatedPoints(updatedAllocations)
-      setTotalAvailablePoints(totalAvailablePoints - pointsVariation)
-    }
-
-    return (
-      <li key={grocer.id}>
-        {grocer.name} <input type="number" min="0" value={allocation.currentPoints} onChange={handleInputChange} />
-      </li>
-    )
+    setAllocatedPoints([])
+    setGrocers([])
   }
 
   return (
-    <div>
-      <h1>Programa João Pessoa Solidária</h1>
-      <Notification message={errorMessage} />
-      {!user && loginForm()}
-      {user && grocers.length > 0 && (
-        <div>
-          <h2>Olá, {user.name}!</h2>
-          <h2>Você tem {totalAvailablePoints} pontos disponíveis para usar com o supermercado de sua preferência.</h2>
-          <button onClick={handleLogout}>Sair</button>
-          <h2>Empresas participantes</h2>
-          <ul>
-            {grocers.map((grocer) => {
-              const allocation = allocatedPoints.find((alloc) => alloc.id === grocer.id)
-              return <GrocerAllocationItem key={grocer.id} grocer={grocer} allocation={allocation} />
-            })}
-          </ul>
-        </div>
-      )}
-      <Footer />
+    <div className="min-h-screen bg-gray-50 p-4 font-sans">
+      <div className="max-w-2xl mx-auto space-y-6">
+        <h1 className="text-4xl font-extrabold text-indigo-700 pt-6 pb-2 border-b border-indigo-200">Programa João Pessoa Solidária</h1>
+        {user && (
+          <div className="flex justify-end">
+            <button onClick={handleLogout} className="bg-red-600 text-white py-2 px-4 rounded-lg font-semibold hover:bg-red-700 transition shadow-md">
+              Sair
+            </button>
+          </div>
+        )}
+
+        <main className="bg-white p-6 rounded-xl shadow-xl">
+          {!user && <LoginForm setUser={setUser} />}
+          {user?.role === 'user' && grocers.length > 0 && (
+            <UserForm user={user} setUser={setUser} allocatedPoints={allocatedPoints} setAllocatedPoints={setAllocatedPoints} grocers={grocers} />
+          )}
+          {user?.role === 'admin' && <AdminForm />}
+        </main>
+
+        <Footer />
+      </div>
     </div>
   )
 }

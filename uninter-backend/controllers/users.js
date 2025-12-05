@@ -9,7 +9,7 @@ usersRouter.get('/', async (request, response) => {
 })
 
 usersRouter.post('/', auth.authMiddleware, auth.adminAuthMiddleware, async (request, response) => {
-  const { username, name, role, password } = request.body
+  const { username, name, role, password, points } = request.body
 
   const saltRounds = 10
   const passwordHash = await bcrypt.hash(password, saltRounds)
@@ -19,6 +19,7 @@ usersRouter.post('/', auth.authMiddleware, auth.adminAuthMiddleware, async (requ
     name,
     role,
     passwordHash,
+    points,
   })
 
   const savedUser = await user.save()
@@ -26,7 +27,7 @@ usersRouter.post('/', auth.authMiddleware, auth.adminAuthMiddleware, async (requ
   response.status(201).json(savedUser)
 })
 
-usersRouter.put('/:userId/points', auth.authMiddleware, auth.adminAuthMiddleware, async (req, res) => {
+usersRouter.put('/:userId/', auth.authMiddleware, auth.adminAuthMiddleware, async (req, res) => {
   try {
     const { userId } = req.params
     const { points } = req.body
@@ -40,7 +41,7 @@ usersRouter.put('/:userId/points', auth.authMiddleware, auth.adminAuthMiddleware
 
     // 2. Find and Update the User
     // We use { new: true } to return the updated document
-    const updatedUser = await User.findByIdAndUpdate(userId, { totalAvailablePoints: points }, { new: true, runValidators: true })
+    const updatedUser = await User.findByIdAndUpdate(userId, { points: points }, { new: true, runValidators: true })
 
     if (!updatedUser) return res.status(404).json({ message: 'User not found.' })
 
@@ -48,12 +49,32 @@ usersRouter.put('/:userId/points', auth.authMiddleware, auth.adminAuthMiddleware
       message: `User points updated successfully to ${points}.`,
       user: {
         username: updatedUser.username,
-        totalAvailablePoints: updatedUser.totalAvailablePoints,
+        points: updatedUser.points,
       },
     })
   } catch (error) {
     console.error('Error updating user points:', error)
     res.status(500).json({ message: 'Server error while updating points.' })
+  }
+})
+
+usersRouter.delete('/:userId', auth.authMiddleware, auth.adminAuthMiddleware, async (req, res) => {
+  try {
+    const { userId } = req.params
+
+    const deleted = await User.findByIdAndDelete(userId)
+
+    if (!deleted) {
+      return res.status(404).json({ message: 'User not found.' })
+    }
+
+    // Optional: clean up related data (allocations, etc.) if needed
+    // await Allocation.deleteMany({ user: userId })
+
+    return res.status(200).json({ message: 'User deleted successfully.' })
+  } catch (error) {
+    console.error('Error deleting user:', error)
+    return res.status(500).json({ message: 'Server error while deleting user.' })
   }
 })
 
