@@ -96,7 +96,7 @@ const UserForm = ({ user, setUser, allocatedPoints, setAllocatedPoints, grocers 
                   disabled={isSaving}
                   className="w-20 p-2 border border-gray-300 rounded-lg text-center focus:ring-indigo-500 focus:border-indigo-500 transition"
                 />
-                <span className="font-bold text-indigo-600">pts</span>
+                <span className="font-bold text-indigo-600">pontos</span>
               </div>
               <button
                 onClick={() => handleSaveAllocation(allocation)}
